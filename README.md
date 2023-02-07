@@ -2,9 +2,9 @@
 Node server that connects to a mongo instance for storing some sneaky stuff.
 
 ### About
-Joe Catudal, Anna Lubienski, Pranav Rao
-University of Wisconsin, Madison
-CS 782
+Joe Catudal, Anna Lubienski, Pranav Rao  
+University of Wisconsin, Madison  
+CS 782  
 Kassem Fawaz
 
 ### Setup:
