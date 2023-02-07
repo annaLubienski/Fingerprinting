@@ -8,7 +8,7 @@ Node server that connects to a mongo instance for storing some sneaky stuff.
 
 Setup:
 1. Clone this repo somewhere
-2. Run the script `npm install`
+2. Run the script `npm install` in the root directory of this project
 3. Create a file in the root directory called `.env`
 4. Inside that file, write: `MONGO_URI=[url I sent you, no brackets]`
 5. Run `npm run dev`
