@@ -19,3 +19,4 @@ Kassem Fawaz
 ### Prerequisites/Notes
 * You will need NodeJS installed on your computer
 * We store the Mongo connection URL in a `.env` file for security reasons
+
