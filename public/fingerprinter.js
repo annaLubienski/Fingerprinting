@@ -1,4 +1,5 @@
-const sendData = async (canvasHash /* TODO: Other data to come later */) => {
+const sendData = async (canvasHash, currentDate /* TODO: Other data to come later */) => {
+    // Send API request
     fetch("/store", {
         method: "POST",
         mode: "cors",
@@ -9,11 +10,28 @@ const sendData = async (canvasHash /* TODO: Other data to come later */) => {
         body: JSON.stringify({
             data: {
                 canvas: canvasHash,
+                date: currentDate,
                 // TODO Other data to come later
             }
         }),
     }).then(res => res.json())
-    .then(response => console.log(response.message))
+    .then(response => {
+        if (response.success) {
+            console.log(response.message);
+
+            // Add the last visited time/date to the page
+            const formattedDate = new Date(response.lastVisited);
+            let dateParagraph = document.createElement("p");
+            dateParagraph.innerHTML = 
+                `You last visited this page on 
+                ${Number(formattedDate.getMonth())+1}/${formattedDate.getDate()}/${formattedDate.getFullYear()} at
+                ${formattedDate.getHours()}:${formattedDate.getMinutes()}:${formattedDate.getSeconds()}`;
+            document.body.appendChild(dateParagraph);
+        }
+        else {
+            console.error(response.message);
+        }
+    })
     .catch(error => console.error("ERROR: ", error));
 };
 
@@ -63,9 +81,9 @@ const onload = (() => {
     }
 
     // output this however you want
-    let span = document.createElement("span");
-    span.innerHTML = hash;
-    document.body.appendChild(span);
+    let paragraph = document.createElement("p");
+    paragraph.innerHTML = `Your fingerprint is: ${hash}`;
+    document.body.appendChild(paragraph);
 
-    sendData(hash);
+    sendData(hash, Date.now());
 })();

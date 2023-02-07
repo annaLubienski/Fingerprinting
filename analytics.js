@@ -7,6 +7,11 @@ const AnalyticsSchema = new Schema({
         type: Number,
         required: true,
         default: 0
+    },
+    lastVisited: {
+        type: Date,
+        required: true,
+        default: Date.now()
     }
     // Add other beacons later for timing and CSS :visited
 });
