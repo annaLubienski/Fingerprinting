@@ -29,15 +29,24 @@ app.get("/", (req, res) => {
     res.send("index.html");
 });
 
-// -- API request to save data to database
-app.post("/store", (req, res) => {
+// -- API request to save data to database. Ensure cross-origin requests are allowed
+app.options("/store", (req, res) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'OPTIONS, POST');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+    res.sendStatus(200);
+});
+
+app.post("/store", /*cors(),*/ (req, res) => {
+    
+    // Allow cross-origin requests
+    res.set({
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS, POST"
+    });
 
     // If data was sent in the request body, do stuff
     if (req.body.data) {
-
-        // Allow queries from anywhere
-        res.setHeader("Access-Control-Allow-Origin", req.headers.origin);
-
         // Store hash and date in variables for easy access
         const theCanvasHash = req.body.data.canvas;
         const currentDate = req.body.data.date;
