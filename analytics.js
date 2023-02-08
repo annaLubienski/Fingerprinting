@@ -12,6 +12,11 @@ const AnalyticsSchema = new Schema({
         type: Date,
         required: true,
         default: Date.now()
+    },
+    sites: {
+        type: [String],
+        required: true,
+        default: []
     }
     // Add other beacons later for timing and CSS :visited
 });

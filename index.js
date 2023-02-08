@@ -50,9 +50,10 @@ app.post("/store", /*cors(),*/ (req, res) => {
         // Store hash and date in variables for easy access
         const theCanvasHash = req.body.data.canvas;
         const currentDate = req.body.data.date;
+        const originSite = req.headers.origin;
 
         // Create a new DB entry
-        let newEntry = new Analytics({canvasHash: theCanvasHash, lastVisited: currentDate});
+        let newEntry = new Analytics({canvasHash: theCanvasHash, lastVisited: currentDate, sites: [originSite]});
 
         Analytics.findOne({ canvasHash: theCanvasHash })
             .then(entry => {
@@ -64,6 +65,7 @@ app.post("/store", /*cors(),*/ (req, res) => {
                                 success: true,
                                 message: "Saved to DB >:)",
                                 lastVisited: currentDate,
+                                sites: [originSite],
                             });
                         })
                         .catch(err => {
@@ -73,16 +75,23 @@ app.post("/store", /*cors(),*/ (req, res) => {
                                 message: err
                             });
                         });
-                // If we found an entry, update the last visited time to the current time
+                // If we found an entry, update the last visited time to the current time and update website list
                 } else {
                     const lastVisitTime = entry.lastVisited;
                     entry.lastVisited = currentDate;
+
+                    // Add the current website if it isn't already there
+                    if (entry.sites.indexOf(originSite) === -1) {
+                        entry.sites.push(originSite);
+                    }
+
                     entry.save()
                         .then(() => {
                             return res.status(200).json({
                                 success: true,
                                 message: "Updated last visit time >:)",
-                                lastVisited: lastVisitTime // Return old value so user knows last time they visited the page
+                                lastVisited: lastVisitTime, // Return old value so user knows last time they visited the page
+                                sites: entry.sites,
                             });
                         })
                         .catch(err => {
