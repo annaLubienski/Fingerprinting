@@ -35,6 +35,9 @@ app.post("/store", (req, res) => {
     // If data was sent in the request body, do stuff
     if (req.body.data) {
 
+        // Allow queries from anywhere
+        res.setHeader("Access-Control-Allow-Origin", req.headers.origin);
+
         // Store hash and date in variables for easy access
         const theCanvasHash = req.body.data.canvas;
         const currentDate = req.body.data.date;
