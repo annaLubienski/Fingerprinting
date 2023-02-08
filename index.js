@@ -29,21 +29,31 @@ app.get("/", (req, res) => {
     res.send("index.html");
 });
 
-// -- API request to save data to database
-app.post("/store", (req, res) => {
+// -- API request to save data to database. Ensure cross-origin requests are allowed
+app.options("/store", (req, res) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'OPTIONS, POST');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+    res.sendStatus(200);
+});
+
+app.post("/store", /*cors(),*/ (req, res) => {
+    
+    // Allow cross-origin requests
+    res.set({
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS, POST"
+    });
 
     // If data was sent in the request body, do stuff
     if (req.body.data) {
-
-        // Allow queries from anywhere
-        res.setHeader("Access-Control-Allow-Origin", req.headers.origin);
-
         // Store hash and date in variables for easy access
         const theCanvasHash = req.body.data.canvas;
         const currentDate = req.body.data.date;
+        const originSite = req.headers.origin;
 
         // Create a new DB entry
-        let newEntry = new Analytics({canvasHash: theCanvasHash, lastVisited: currentDate});
+        let newEntry = new Analytics({canvasHash: theCanvasHash, lastVisited: currentDate, sites: [originSite]});
 
         Analytics.findOne({ canvasHash: theCanvasHash })
             .then(entry => {
@@ -55,6 +65,7 @@ app.post("/store", (req, res) => {
                                 success: true,
                                 message: "Saved to DB >:)",
                                 lastVisited: currentDate,
+                                sites: [originSite],
                             });
                         })
                         .catch(err => {
@@ -64,16 +75,23 @@ app.post("/store", (req, res) => {
                                 message: err
                             });
                         });
-                // If we found an entry, update the last visited time to the current time
+                // If we found an entry, update the last visited time to the current time and update website list
                 } else {
                     const lastVisitTime = entry.lastVisited;
                     entry.lastVisited = currentDate;
+
+                    // Add the current website if it isn't already there
+                    if (entry.sites.indexOf(originSite) === -1) {
+                        entry.sites.push(originSite);
+                    }
+
                     entry.save()
                         .then(() => {
                             return res.status(200).json({
                                 success: true,
                                 message: "Updated last visit time >:)",
-                                lastVisited: lastVisitTime // Return old value so user knows last time they visited the page
+                                lastVisited: lastVisitTime, // Return old value so user knows last time they visited the page
+                                sites: entry.sites,
                             });
                         })
                         .catch(err => {

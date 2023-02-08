@@ -27,6 +27,20 @@ const sendData = async (canvasHash, currentDate /* TODO: Other data to come late
                 ${Number(formattedDate.getMonth())+1}/${formattedDate.getDate()}/${formattedDate.getFullYear()} at
                 ${formattedDate.getHours()}:${formattedDate.getMinutes()}:${formattedDate.getSeconds()}`;
             document.body.appendChild(dateParagraph);
+
+            // Add website list
+            const listHeader = document.createElement("h4");
+            listHeader.innerHTML = "Websites you have visited: ";
+            
+            const ul = document.createElement("ul");
+            response.sites.map((site) => {
+                let li = document.createElement("li");
+                li.innerHTML = site;
+                ul.appendChild(li);
+            });
+
+            document.body.appendChild(listHeader);
+            document.body.appendChild(ul);
         }
         else {
             console.error(response.message);
