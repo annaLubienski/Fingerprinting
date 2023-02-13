@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <script>
+        CSS.paintWorklet.addModule('checkerboard.js');
+    </script>
+    <style>
+        textarea {
+            background-image: paint(checkerboard);
+        }
+        #target {background-image: paint(checkerboard);}
+        li {
+            background-image: paint(checkerboard);
+        }
+    </style>
+</head>
+<body>
+    <textarea>Text Area</textarea>
+    <a id="target" href="https://google.com">Click here</a>
+    <ul>
+        <li>item 1</li>
+        <li>item 2</li>
+        <li>item 3</li>
+      </ul>
+</body>
+</html>
